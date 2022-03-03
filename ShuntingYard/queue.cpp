@@ -26,7 +26,7 @@ void queue::enqueue(int value)
   }
 }
 
-char queue::dequeue() 
+void queue::dequeue() 
 {
   if (head == NULL) 
   {

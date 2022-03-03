@@ -6,7 +6,7 @@ using namespace std;
 
 struct Node
 {
-  char data;
+  int data;
   Node* next;
 };
 
@@ -16,7 +16,7 @@ class queue
   queue();
   ~queue();
   void enqueue(int value);
-  char dequeue();
+  void dequeue();
  private:
   Node* head = NULL;
   Node* tail = NULL;
