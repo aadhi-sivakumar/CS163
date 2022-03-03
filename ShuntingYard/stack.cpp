@@ -2,18 +2,23 @@
 
 stack::stack() 
 {
-  head = NULL;
+  
 }
 
-void stack::push(char n)
+stack::~stack() 
 {
-  stackNode* number = new stackNode();
-  number->next = head;
-  number->data = n;
-  head = number;
+  
 }
 
-char stack::peek()
+void stack::push(int value)
+{
+  node* temp = new node();
+  temp->data = value;
+  temp->next = head;
+  head = temp;
+}
+
+int stack::peek()
 {
   if (head != NULL) 
   {
@@ -21,22 +26,20 @@ char stack::peek()
   }
   else 
   {
-    return NULL;
+    cout << "Stack is empty.";
   }
 }
 
-char stack::pop()
+void stack::pop()
 {
   if (head != NULL) 
   {
-    stackNode* number = head;
-    char next = number->data;
-    head = number->next;
-    delete number;
-    return next;
+    node* temp = head;
+    head = head->next;
+    delete temp;
   }
   else 
   {
-    return NULL;
+    cout << "The stack is empty." << endl;
   }
 }

@@ -2,37 +2,46 @@
 
 queue::queue() 
 {
-  head = NULL;
+  
 }
 
-void queue::enqueue(char n)
+queue::~queue() 
 {
-  queueNode* number = new queueNode();
-  number->data = n;
+  
+}
+
+void queue::enqueue(int value)
+{
+  Node* temp = new Node();
+  temp->data = value;
   if (head == NULL) 
   {
-    head = number;
+    head = temp;
+    tail = temp;
   }
   else 
   {
-    queueNode* number2 = head;
-    while (number2->next != NULL) {
-      number2 = number2->next;
-    }
-    number2->next = number;
+    tail->next = temp;
+    tail = temp;
   }
 }
 
-char queue::dequeue() {
-  if (head == NULL) {
-    return NULL;
-  }
-  else 
+char queue::dequeue() 
+{
+  if (head == NULL) 
   {
-    queueNode* number = head;
-    char next = number->data;
-    head = number->next;
-    delete number;
-    return next;
+    cout << "Queue is empty" << endl;
+  }
+  else if (head == tail)
+  {
+    free(head);
+    head = NULL;
+    tail = NULL;
+  }
+  else
+  {
+    Node* temp = head;
+    head = head->next;
+    free(temp);
   }
 }

@@ -3,20 +3,23 @@
 
 #include <iostream>
 using namespace std;
-struct queueNode
+
+struct Node
 {
   char data;
-  queueNode* next;
+  Node* next;
 };
 
 class queue
 {
  public:
   queue();
-  void enqueue(char n);
+  ~queue();
+  void enqueue(int value);
   char dequeue();
  private:
-  queueNode* head;
+  Node* head = NULL;
+  Node* tail = NULL;
 };
 
 #endif

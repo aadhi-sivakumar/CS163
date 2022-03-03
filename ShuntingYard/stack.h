@@ -4,21 +4,25 @@
 #include <iostream>
 using namespace std;
 
-struct stackNode
+struct node
 {
-  char data;
-  stackNode* next;
+  int data;
+  node* next;
 };
 
 class stack
 {
   public:
+    //constructor
     stack();
-    void push(char n);
-    char peek();
-    char pop();
+    //destructor
+    ~stack();
+    
+    void push(int value);
+    int peek();
+    void pop();
  private:
-  stackNode* head;
+  node* head = NULL;
 };
 
 #endif
