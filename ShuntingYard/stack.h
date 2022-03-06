@@ -6,7 +6,7 @@ using namespace std;
 
 struct node
 {
-  int data;
+  char data;
   node* next;
 };
 
@@ -17,10 +17,11 @@ class stack
     stack();
     //destructor
     ~stack();
-    
-    void push(int value);
-    int peek();
+    void push(char value);
+    char peek();
     void pop();
+    bool isEmpty();
+    node* getNext(node* n);
  private:
   node* head = NULL;
 };

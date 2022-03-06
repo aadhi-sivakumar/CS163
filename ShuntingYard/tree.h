@@ -1,30 +1,24 @@
-/*#ifndef TREE_H
+#ifndef TREE_H
 #define TREE_H
 #include <cstring>
 
-struct treeNode
-{
+// Linked list node
 
-}
 class tree
 {
   public:
-    tree(char newVal);
-    ~tree();
-    char getValue();
-    void setValue(char newVal);
-    tree* getRight();
+    tree(char newData);
+    char getData();
     tree* getLeft();
+    tree* getRight();
     void setLeft(tree* newLeft);
     void setRight(tree* newRight);
-    tree* getNext();
-    void setNext(tree* newNext);
+    ~tree();
   private:
-    char value;
+    char data;
     tree* left;
     tree* right;
-    tree* next;
 };
 
+
 #endif
-*/

@@ -10,7 +10,7 @@ queue::~queue()
   
 }
 
-void queue::enqueue(int value)
+void queue::enqueue(char value)
 {
   Node* temp = new Node();
   temp->data = value;
@@ -26,7 +26,7 @@ void queue::enqueue(int value)
   }
 }
 
-void queue::dequeue() 
+void queue::dequeue()
 {
   if (head == NULL) 
   {
@@ -44,4 +44,54 @@ void queue::dequeue()
     head = head->next;
     free(temp);
   }
+}
+
+bool queue::isEmpty()
+{
+  if (head == NULL)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+char queue::getQueue()
+{
+  if (head != NULL)
+  {
+     return head->data;
+  }
+  else
+  {
+    //returns a negative if the queue is empty
+     return NULL; 
+  }
+}
+void queue::printQueue()
+{
+  Node * node = head;
+  while (node != NULL)
+  { 
+    cout << node->data << " " ;
+    node = node->next;
+  }
+}
+Node* queue::getNext(Node* n)
+{
+  if (n == NULL)
+  {
+     return head;
+  }
+  else if (n->next != NULL)
+  {
+    return n->next;
+  }
+  else
+  {
+    return NULL;
+  }
+  
 }

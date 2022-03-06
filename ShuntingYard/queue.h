@@ -6,7 +6,7 @@ using namespace std;
 
 struct Node
 {
-  int data;
+  char data;
   Node* next;
 };
 
@@ -15,11 +15,16 @@ class queue
  public:
   queue();
   ~queue();
-  void enqueue(int value);
+  void enqueue(char value);
   void dequeue();
+  char getQueue();
+  void printQueue();
+  Node* getNext(Node* n);
+  bool isEmpty();
  private:
   Node* head = NULL;
   Node* tail = NULL;
+ 
 };
 
 #endif

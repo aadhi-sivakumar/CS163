@@ -1,54 +1,44 @@
-/*#include <iostream>
+#include <iostream>
 #include <cstring>
 #include "tree.h"
 
 using namespace std;
 
-tree::tree(char newValue)
-{
+tree::tree(char newData) 
+{ //constructer
+    data = newData;
     right = NULL;
     left = NULL;
-    next = NULL;
-    value = newValue;
-}
-tree::~tree()
-{
-    
 }
 
-tree* tree::getRight()
+char tree::getData() 
 {
+    return data;
+}
+
+tree* tree::getRight() 
+{ //getter for right node
     return right;
 }
 
-void tree::setRight(tree* newRight)
-{
-    right = newRight;
-}
-
-tree* tree::getLeft()
-{
+tree* tree::getLeft() 
+{ //getter for left node
     return left;
 }
 
+void tree::setRight(tree* newRight)
+{ //setter for right node
+    right = newRight;
+}
+
 void tree::setLeft(tree* newLeft)
-{
+{ //setter for left node
     left = newLeft;
 }
 
-tree* tree::getNext()
-{
-    return next;
-}
 
-void tree::setNext(tree* newNext)
-{
-    next = newNext;
+tree::~tree()
+{ 
+  //destructer
 }
-
-char tree::getValue()
-{
-    return value;
-}
-*/
 
