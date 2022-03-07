@@ -2,8 +2,7 @@
 //Author: Aadhi Sivakumar
 //Assignment: Shunting Yard Algorithmn
 //Date: 3/2/2022
-//Sources: Dad helped me with queue
-// 
+//Sources: Dad helped me with shunting yard and binary tree. Used wikipedia for assistance in the shunting yard.
 */
 
 #include "stack.h"
@@ -17,35 +16,57 @@
 //function prototypes
 int precedence(char operation);
 void test();
-void toPostfix(char* infix);
+char* ConvertToPostfix(char* infix);
+tree* buildTree(char* Exp);
+void PrintInfix(tree* T);
+void PrintPrefix(tree* T);
+void PrintPostfix(tree* T);
 
 int main() 
 {
   stack* Stack = new stack();
   queue* Queue = new queue();
+  tree* ExpBTree = NULL;
   
   //variables
-  char input[100];
-  char output[100];
-  int number = 0;
+  char inputExp[500];
+  char noSpaceInputExp[500];
+  char strPostFix[500];
+  int idx = 0;
   //welcome message
   cout << "Welcome to the Shunting Yard Algorithm! Please enter an equation in infix notation(how it is normally written)." << endl;
   //asking for user input
-  cin.getline(input,100);
+  cin.getline(inputExp,100);
   //removes spaces from input
-  for (int i = 0; i < strlen(input); i++) 
+  for (int i = 0; i < strlen(inputExp); i++) 
   {
-    if (input[i] != ' ') 
+    if (inputExp[i] != ' ') 
     {
-      output[number] = input[i];
-      number++;
+      noSpaceInputExp[idx++] = inputExp[i];
     }
   }
-  toPostfix(output);
-
+  noSpaceInputExp[idx] = '\0';
+ //converts the postfix expression so it has no spaces
+  strcpy(strPostFix,ConvertToPostfix(noSpaceInputExp));
+  //outputs the expression in postfix using shunting yard algorithmn
+  cout << endl << "Postfix using Shuting Yard Algorithm:" << endl << strPostFix << endl;
+ 
+  ExpBTree = buildTree(strPostFix);
+  //Display Btree in Infix format
+  cout << endl << "Infix:" << endl;
+  PrintInfix(ExpBTree);
+  //Display Btree in PreFix format
+  cout << endl << "Prefix:" << endl;
+  PrintPrefix(ExpBTree);
+  //Display Btree in Postfix format
+  cout << endl << "Postfix:" << endl;
+  PrintPostfix(ExpBTree);
+  cout << endl;
   return 0;
+  
 }
 
+//precedence of operations
 int precedence(char operation)
 {
   if(operation == '^')
@@ -66,11 +87,13 @@ int precedence(char operation)
   }
 }
 
-void toPostfix(char* infix)
+//shunting yard algortithmn
+//used the wikipedia link on canvas to help me write the shunting yard algorithmn
+char* ConvertToPostfix(char* infix)
 {
   stack* Stack = new stack();
   queue* Queue = new queue();
-  
+
   for (int i = 0; i < strlen(infix); i++)
   {
     char t = infix[i];
@@ -137,90 +160,83 @@ void toPostfix(char* infix)
     Stack->pop();
   }//end of while
   
-  //display the postfix by printing out the queue 
-  Queue->printQueue();
- /* while (!Queue->isEmpty())
-  {
-    cout << Queue->getQueue();
-    Queue->dequeue();
-  }
-  */
+  //Get the queue content to return the converted postfix string to main
+  char rtnstr[500];
+  strcpy(rtnstr,Queue->getQueueContent());
+  return(rtnstr);
+
+  
 }//end of function
 
-//binary tree functions
-void buildTree(queue* Queue)
+//building the binary tree
+tree* buildTree(char* postfix)
 {
   stack* Stack = new stack();
   tree* Btree = NULL;
-  Node* queueNode = Queue->getNext(NULL);
-  
-  
-  while (queueNode != NULL)
-  {
-    char item = queueNode->data;
-    if (isdigit(item))
-    {
-      Stack->push(item);      
-    }
-    else
-    {
-      tree* Tree = new tree(item);
-      if (Btree == NULL)
-      {
-        char data1 = Stack->peek();
-        char data2 = Stack->getNext(NULL)->data;
-        tree* right = new tree(data1);
-        tree* left = new tree(data2);
-        Tree->setRight(right);
-        Tree->setLeft(left);
-        Stack->pop();
-        Stack->pop();
-        Btree = Tree;
-      }
-      else
-      {
-      //  char data1 = Btree->getData();
-        char data2 = Stack->peek();
-        tree* right = new tree(data2);
-        Tree->setRight(right);
-        Tree->setLeft(Btree);
-        Stack->pop();
-        Btree = Tree;
-        
-      }
-      
-/*
-    if (thead == NULL) {
-        char a = peek(shead2);
-        char b = peek(shead2->next);
-        BNode* right = new BNode(a);
-        BNode* left = new BNode(b);
-        node->setRight(right);
-        node->setLeft(left);
-        pop(shead2);
-        pop(shead2);
-        thead = node;
-    }
-
-    else {
-        char a = thead->getChar();
-        char b = peek(shead2);
-        BNode* right = new BNode(b);
-        node->setRight(right);
-        node->setLeft(thead);
-        pop(shead2);
-        thead = node;
-    }
-    */
-            
-    }
-    queueNode = Queue->getNext(queueNode);
-    
-  }
+  tree* LeftTree = NULL;
+  tree* RightTree = NULL;
+  //Node* queueNode = Queue->getNext(NULL);
+  int i = 0;
+	while (postfix[i] != '\0')
+	{
+		if (!(postfix[i] == '+' || postfix[i] == '-' || postfix[i] == '*' || postfix[i] == '/' || postfix[i] == '^'))
+		{
+			Btree = new tree(postfix[i]);
+      //Stack->push(postfix[i]);
+			Stack->pushNode(Btree);
+		}
+		else
+		{
+			Btree = new tree(postfix[i]);
+   //  LeftTree = new tree(Stack->peekNode()->getData()); 
+     LeftTree = Stack->peekNode();
+     Stack->popNode();
+     
+      RightTree = Stack->peekNode();
+     // RightTree = new tree(Stack->peek());
+     // Stack->pop();
+      Stack->popNode();
+			Btree->setRight(RightTree); 
+		  Btree->setLeft(LeftTree); 
+		  Stack->pushNode(Btree);
+		}
+		i++;
+	}
  
-      
+  tree* resultTree = Stack->peekNode();
+  return resultTree; 
 }
 
+//print infix 
+void PrintInfix(tree* T)
+{
+	if (T != NULL)
+	{
+		PrintInfix(T->getRight());
+		T->printNode();
+		PrintInfix(T->getLeft());
+	}
+}      
+//print prefix
+void PrintPrefix(tree* T)
+{
+	if (T != NULL)
+	{
+		T->printNode();
+		PrintPrefix(T->getRight());
+    PrintPrefix(T->getLeft());
+	}
+} 
+//print postfix
+void PrintPostfix(tree* T)
+{
+	if (T != NULL)
+	{
+    PrintPostfix(T->getRight());
+		PrintPostfix(T->getLeft());
+		T->printNode();
+	}
+} 
 
 void test()
 {

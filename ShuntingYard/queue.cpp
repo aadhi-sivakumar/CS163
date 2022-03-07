@@ -1,15 +1,18 @@
 #include "queue.h"
 
+//constructor
 queue::queue() 
 {
   
 }
 
+//destructor
 queue::~queue() 
 {
   
 }
 
+//pushing into queue
 void queue::enqueue(char value)
 {
   Node* temp = new Node();
@@ -26,6 +29,7 @@ void queue::enqueue(char value)
   }
 }
 
+//removing from queue
 void queue::dequeue()
 {
   if (head == NULL) 
@@ -45,7 +49,7 @@ void queue::dequeue()
     free(temp);
   }
 }
-
+//checking if queue is empty
 bool queue::isEmpty()
 {
   if (head == NULL)
@@ -58,6 +62,7 @@ bool queue::isEmpty()
   }
 }
 
+//gets queue values
 char queue::getQueue()
 {
   if (head != NULL)
@@ -70,6 +75,8 @@ char queue::getQueue()
      return NULL; 
   }
 }
+
+//prints queue
 void queue::printQueue()
 {
   Node * node = head;
@@ -79,19 +86,20 @@ void queue::printQueue()
     node = node->next;
   }
 }
-Node* queue::getNext(Node* n)
+
+//trasverses through queue node to get the contents in the queue to return as a string
+char* queue::getQueueContent()
 {
-  if (n == NULL)
-  {
-     return head;
-  }
-  else if (n->next != NULL)
-  {
-    return n->next;
-  }
-  else
-  {
-    return NULL;
-  }
+  char content[500];
+  int idx = 0;
   
+  Node * node = head;
+  while (node != NULL)
+  {
+    content[idx++] =  node->data ;
+    node = node->next;
+  }
+  content[idx] = '\0';
+ 
+  return content;
 }
