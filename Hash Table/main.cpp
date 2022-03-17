@@ -141,30 +141,35 @@ void printstudent(student* s) {
   cout << endl;
 }
 
-void print(Node* hashtable[], int size) {
+void print(Node* hashtable[], int size) 
+{
   // print all students using printstudent function
-  cout << endl;
   Node* node = new Node();
-  for (int i=0; i<size; i++) {
+  for (int i=0; i<size; i++) 
+  {
     node = hashtable[i];
     node = node->next;
-    while (n != NULL) {
+    while (n != NULL) 
+    {
       printstudent(node->Student);
       node = node->next;
     }
   }
 }
 
-bool check(Node* hashtable[], int size) {
+bool check(Node* hashtable[], int size) 
+{
   // check if table should be rehashed
-  bool b = false;
+  bool rehash = false;
   int numfull = 0;
   int count = 0;
   Node* n = new Node();
-  for (int i=0; i<size; i++) {
+  for (int i=0; i<size; i++) 
+  {
     numfull = 0;
     node = hashtable[i];
-    if (node->next == NULL) {
+    if (node->next == NULL) 
+    {
       continue;
     }
     node = node->next;
@@ -173,45 +178,54 @@ bool check(Node* hashtable[], int size) {
       n = n->next;
     }
     if (numfull > 3) {
-      b = true;
+      rehash = true;
     }
   }
   if (count > size/2) {
-    b = true;
+    rehash = true;
   }
-  return b;
+  return rehash;
 }
 
-Node* remove(Node* hashtable[], int size, int id, bool needconfirm) {
+Node* remove(Node* hashtable[], int size, int id, bool needconfirm) 
+{
   // remove a student
   int i = id % size;
   Node* previous = hashtable[i];
   Node* current = hashtable[i]->next;
   bool found = false;
   char confirm = 'y';
-  while (current != NULL) {
-    if (current->Student->studID == id) {
-      if (needconfirm) {cout << "I'm about to delete " << current->Student->firstName << " " << current->Student->lastName << ". Is this what you want to do? (y/n)" << endl;}
-      if (needconfirm) {cin >> confirm;}
-      if (confirm == 'y' || confirm == 'Y') {
-	if (needconfirm) {cout << "Deleting student.\n" << endl;}
-	previous->next = current->next;
-	return current;
+  while (current != NULL) 
+  {
+    if (current->Student->studID == id) 
+    {
+      if (needconfirm) 
+      {
+        cout << "I'm about to delete " << current->Student->firstName << " " << current->Student->lastName << ". Are you sure you want to remove this student? (y/n)" << endl;}
+        cin >> confirm;
       }
-      else {
-	cout << "Ok. No student deleted.\n" << endl;
-	return NULL;
+      if (confirm == 'y' || confirm == 'Y') 
+      {
+        cout << "Deleting student." << endl;}
+	      previous->next = current->next;
+	      return current;
+      }
+      else 
+      {
+	      cout << " No student deleted." << endl;
+	      return NULL;
       }
       found = true;
       break;
     }
-    else {
+    else 
+    {
       previous = current;
       current = current->next;
     }
   }
   if (found == false) {
-    cout << "No student has that ID number. Nothing has been deleted.\n" << endl;
+    cout << "Invalid ID number. Nothing has been deleted." << endl;
   }
   return NULL;
 }
