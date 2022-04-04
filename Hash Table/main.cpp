@@ -1,81 +1,148 @@
 //**********************************************
 //Author: Aadhi Sivakumar
 //Assignment: Hash Table
-//Description: Student list with hash table
+//Description: Student list with hash table. Help from Zayeed and my dad on the program.
 //Date: 3/12/22
 //***********************************************
+
+
 
 #include <iostream>
 #include <iomanip>
 #include <cstring>
 #include <cctype>
 #include <fstream>
+#include "node.h"
+#include "student.h"
 using namespace std;
 
-struct student
-{	
-	char firstName[50];
-	char lastName[50];
-	int studID;
-	float GPA;
-};
-
-struct Node 
-{
-  student* Student;
-  Node* next;
-};
-
-//function prototypes
+//Function Prototypes
 void displayMenu();
-void addstudent(Node* hashtable[], int size, student* s);
-void printstudent(student* s);
-void print(Node* hashtable[], int size);
-bool check(Node* hashtable[], int size);
-Node* remove(Node* hashtable[], int size, int id, bool confirmation);
+Student* makeStudent();
+void add(Node* &head, Student* newStudent);
+void print(Node* head);
+void del(Node*&head, Node* current, Node* previous, int studentID);
+int collision(Node* head);
+int hashFunction(Student* newStudent, int size);
+void rehash(Node** &HashTable, Node* head, int size);
 
 int main()
 {
-  //initializing variables
-  srand (time(NULL));
-  int size = 100;
-  int randomid = 1;
-  char line[100];
-	char option[20];
-  int delId;
-
-  //loop until user inputs quit
+  char option[50];
+  int size = 101;
+  int randID = 0;
+  char firstName[100];
+  char lastName[100];
+  int studID = 0;
+  float GPA = 0;
+  int ID;
+  
+  Node** hashtable = new Node*[size];
+  
+  for (int i = 0; i < size; i++) 
+  {
+    hashtable[i] = NULL;
+  }
+  
   do
 	{
     //shows the display menu
 		displayMenu();
+    
     //gets user's input on action
 		cin.getline(option, 50);
+    
 	  // convert the input to upper case	
 		for (int i=0; i < strlen(option); i++)
 		{		
    			option[i] = toupper(option[i]);
 		}	
+    
 		// options based on users input for option
     // if user inputs add
 		if (strcmp(option, "ADD") == 0)
 		{
+      //adds student to hashtable
+      cout << "Enter the student's firstname." << endl;
+      cin >> firstName;
+      cout << "Enter the student's lastname." << endl;
+      cin >> lastName;
+      cout << "Enter the student's student ID." << endl;
+      cin >> studID;
+      cout << "Enter the student's GPA." << endl;
+      cin >> GPA;
 
-		}
-    //if user inputs random
-    else if (strcmp(option, "RANDOM") == 0)
+      //creates a new student with these parameters
+      Student* student = new Student(firstName,lastName, studID, GPA);
+      //adds the student to the hashtable
+      add(hashtable[hashFunction(student, size)], student);
+
+      //checks for collision
+      for(int i = 0; i < size; i++)
+      {
+        if(hashtable[i] != NULL)
+        {
+          if(collision(hashtable[i])> 3)
+          {
+            //size of table doubles if there are more than three collisions
+            size = size * 2;
+            
+            //Create a new empty table
+            Node** newTable = new Node*[size];
+            for(int i = 0; i < size; i++)
+            {
+             newTable[i] = NULL;
+            }
+            
+            //Rehash the table
+            for(int i = 0; i < size/2; i++)
+            {
+              rehash(newTable, hashtable[i], size);
+            }   
+            cout << "The table has been rehashed!" << endl;
+            for (int i = 0; i < size/2; i++) 
+            {
+              hashtable[i]->~Node();
+            }
+            
+            //Delete the old table
+	          hashtable = new Node*[size];
+	          hashtable = newTable;
+	          delete[] newTable;
+	          break;
+          }
+        }
+      } 
+    }
+    else if(strcmp(option, "RANDOM") == 0)
     {
-      
+      int num = 0;
+      cout << "How many students do you want to add?" << endl;
+      cin >> num;
+      for(int i = 0; i < num; i++)
+      {
+        Student* student= makeStudent();
+        add(hashtable[hashFunction(student, size)], student);  
+      }  
     }
     // if user inputs print
 		else if (strcmp(option, "PRINT") == 0)
 		{
+      for (int i = 0; i < size; i++) 
+      {
+        print(hashtable[i]);
+		  }
+    }
       
-		}
     // if user inputs inputs delete
 		else if (strcmp(option, "DELETE") == 0)
 		{
-
+      cout << "Enter the ID number of the student you want to delete: ";
+      cin >> ID;
+      for (int i = 0; i < size; i++) 
+      {
+        del(hashtable[i], hashtable[i], hashtable[i], ID);
+      }
 		}
     // if user inputs quit
 		else if (strcmp(option, "QUIT") == 0)
@@ -87,146 +154,147 @@ int main()
 		{
 		   cout << "Invalid Input, please enter a valid option" << endl; 
 		}
-
 	}
 	while(strcmp(option, "QUIT") != 0);
-	return 0;				
 }
-// displays options user can do
+
+//display menu with user options
 void displayMenu()
 {
   cout << endl; 
 	cout << "Select an option:" << endl << endl; 
 	cout << "ADD--->Type 'ADD' to add a new student record: " << endl;
-        cout << "PRINT--->Type 'PRINT' to print out all the students currently stored: " << endl;
+  cout << "PRINT--->Type 'PRINT' to print out all the students currently stored: " << endl;
 	cout << "DELETE--->Type 'DELETE' to delete a student ID number from the record: " << endl;
+  cout << "RANDOM--->Type 'RANDOM' to generate a random student: " << endl;
 	cout << "QUIT--->Type 'QUIT' to exit the program: " << endl;
-  cout << "RANDOM--->Type 'RANDOM' to add random names(random student generator): "
 }
-// option if user wants to add student record
-void add(Node* hashtable[], int size, student* s)
+
+
+void add(Node* &head, Student* newStudent)
 {
-	Node* node = new Node();
-  node->Student = s;
-  node->next = NULL;
-  int hash = (node->studID)%size;
-  Node* temp = new Node();
-  temp = hashtable[hash];
-  while (temp->next != NULL) {
-    temp = temp->next;
-  }
-  temp->next = node;
-	student st; 
-
-}
-
-void addstudent(Node* hashtable[], int size, student* s) {
-  Node* node = new Node();
-  node->Student = s;
-  node->next = NULL;
-  int hash = (s->studID)%size;
-  Node* temp = new Node();
-  temp = hashtable[hash];
-  while (temp->next != NULL) {
-    temp = temp->next;
-  }
-  temp->next = node;
-}
-
-void printstudent(student* s) {
-  // print a student name, id, gpa
-  cout << s->firstName << " " << s->lastName << endl;
-  cout << s->studID << endl;
-  cout << "GPA: " << fixed << setprecision(2) << s->GPA << endl;
-  cout << endl;
-}
-
-void print(Node* hashtable[], int size) 
-{
-  // print all students using printstudent function
-  Node* node = new Node();
-  for (int i=0; i<size; i++) 
+  Node* current = head;
+  //If the current node is NULL
+  if(current == NULL)
   {
-    node = hashtable[i];
-    node = node->next;
-    while (n != NULL) 
-    {
-      printstudent(node->Student);
-      node = node->next;
-    }
+    //Add student to the head node
+    head = new Node(newStudent);
   }
-}
-
-bool check(Node* hashtable[], int size) 
-{
-  // check if table should be rehashed
-  bool rehash = false;
-  int numfull = 0;
-  int count = 0;
-  Node* n = new Node();
-  for (int i=0; i<size; i++) 
+  else
   {
-    numfull = 0;
-    node = hashtable[i];
-    if (node->next == NULL) 
-    {
-      continue;
-    }
-    node = node->next;
-    while (node != NULL) {
-      numfull = numfull+1;
-      n = n->next;
-    }
-    if (numfull > 3) {
-      rehash = true;
-    }
+      while(current->getNext() != NULL){
+          current = current->getNext();
+      }
+      current->setNext(new Node(newStudent));
   }
-  if (count > size/2) {
-    rehash = true;
-  }
-  return rehash;
 }
 
-Node* remove(Node* hashtable[], int size, int id, bool needconfirm) 
+void print(Node* head)
 {
-  // remove a student
-  int i = id % size;
-  Node* previous = hashtable[i];
-  Node* current = hashtable[i]->next;
-  bool found = false;
-  char confirm = 'y';
-  while (current != NULL) 
+  if(head != NULL)
   {
-    if (current->Student->studID == id) 
-    {
-      if (needconfirm) 
-      {
-        cout << "I'm about to delete " << current->Student->firstName << " " << current->Student->lastName << ". Are you sure you want to remove this student? (y/n)" << endl;}
-        cin >> confirm;
-      }
-      if (confirm == 'y' || confirm == 'Y') 
-      {
-        cout << "Deleting student." << endl;}
-	      previous->next = current->next;
-	      return current;
-      }
-      else 
-      {
-	      cout << " No student deleted." << endl;
-	      return NULL;
-      }
-      found = true;
-      break;
-    }
-    else 
-    {
-      previous = current;
-      current = current->next;
-    }
+    cout << "Name: " << (head->getStudent()->firstName) << " " 
+    << (head->getStudent()->lastName) << endl; 
+    cout << "Student ID: " << (head->getStudent()->studID) << endl;
+    cout << "GPA:" << fixed << setprecision(2) << (head->getStudent()->GPA) << endl;
+    cout << endl;
+    print(head->getNext()); 
   }
-  if (found == false) {
-    cout << "Invalid ID number. Nothing has been deleted." << endl;
+}
+//Delete a student
+void del(Node*&head, Node* current, Node* previous, int studentID)
+{
+  if(head == NULL)
+  {
+    return;
   }
-  return NULL;
+    else if(current == NULL)
+    {
+       return;
+    }
+    //If the entered id matches
+    else if(studentID == current->getStudent()->getID())
+    {
+      //If the head node has the student who should be deleted
+      if(studentID == head->getStudent()->getID())
+      {
+         Node* temp = head;
+         head = head->getNext();
+         //Deete t
+         temp->~Node(); 
+      }
+      //If it's another node
+      else
+      {
+        previous->setNext(current->getNext());
+        current->~Node();    
+      }
+    }
+    else
+    {
+      del(head, current->getNext(), current, studentID);
+    }
 }
 
+//Generating a random student
+Student* makeStudent()
+{
+  char* arr[100];
+  char* arr2[100];
+  //Filling two arrays with the names from text files
+  fstream first;
+  first.open("first.txt");
+  for(int i = 0; i<100; i++)
+  {
+    char* firstName = new char[50];
+    first >> firstName;
+    arr[i] = firstName;
+  }
+    fstream last;
+    last.open("last.txt");
+    for(int j = 0; j<100; j++)
+    {
+      char* lastName = new char[50];
+      last >> lastName;
+      arr2[j] = lastName;
+    }
+    //Pulling random names from the text files
+    char* studentFirst = arr[rand() %100 + 1];
+    char* studentLast = arr2[rand() %100 + 1];
+    int studentID = rand() %9000 + 1000;
+
+    float studentGPA = float(rand()%501)/100; //generates random float from 0.00 to 5.00 to use as gpa
+
+    //Rounding that number to 2 decimal places
+    studentGPA = (studentGPA * 100) / 100;
+    //Returning that student
+    Student* s2 = new Student(studentFirst,studentLast, studentID, studentGPA);
+    return s2;
+}
+//Rehashing the table
+void rehash(Node** &HashTable, Node* head, int size)
+{
+    if(head != NULL)
+    {
+      add(HashTable[hashFunction(head->getStudent(), size)], head->getStudent());
+      rehash(HashTable, head->getNext(), size);
+    }
+}
+
+
+int hashFunction(Student* newStudent, int size)
+{
+  return newStudent->getID() % size;
+}
+
+int collision(Node* head)
+{
+  int collisionCount = 0;
+  Node* current = head;
+  while(current->getNext() != NULL)
+  {
+    collisionCount++;
+    current = current->getNext();
+  }
+  return collisionCount;
+}
