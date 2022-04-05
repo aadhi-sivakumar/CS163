@@ -18,7 +18,7 @@ using namespace std;
 
 //Function Prototypes
 void displayMenu();
-Student* makeStudent();
+void makeStudent(int numofStudents, Node** ht, int htsize);
 void add(Node* &head, Student* newStudent);
 void print(Node* head);
 void del(Node*&head, Node* current, Node* previous, int studentID);
@@ -28,9 +28,9 @@ void rehash(Node** &HashTable, Node* head, int size);
 
 int main()
 {
+  //declaring variables
   char option[50];
-  int size = 101;
-  int randID = 0;
+  int size = 201;
   char firstName[100];
   char lastName[100];
   int studID = 0;
@@ -119,15 +119,13 @@ int main()
       int num = 0;
       cout << "How many students do you want to add?" << endl;
       cin >> num;
-      for(int i = 0; i < num; i++)
-      {
-        Student* student= makeStudent();
-        add(hashtable[hashFunction(student, size)], student);  
-      }  
+      makeStudent(num,hashtable,size);
+     
     }
     // if user inputs print
 		else if (strcmp(option, "PRINT") == 0)
 		{
+      cout << endl << "Printed Students:" << endl;
       for (int i = 0; i < size; i++) 
       {
         print(hashtable[i]);
@@ -149,7 +147,7 @@ int main()
 		{
 		   break;
 		}
-    // if user does not input one of the oprions
+    // if user does not input one of the options
 		else
 		{
 		   cout << "Invalid Input, please enter a valid option" << endl; 
@@ -167,7 +165,7 @@ void displayMenu()
   cout << "PRINT--->Type 'PRINT' to print out all the students currently stored: " << endl;
 	cout << "DELETE--->Type 'DELETE' to delete a student ID number from the record: " << endl;
   cout << "RANDOM--->Type 'RANDOM' to generate a random student: " << endl;
-	cout << "QUIT--->Type 'QUIT' to exit the program: " << endl;
+	cout << "QUIT--->Type 'QUIT' to exit the program: " << endl << endl;
 }
 
 
@@ -182,8 +180,9 @@ void add(Node* &head, Student* newStudent)
   }
   else
   {
-      while(current->getNext() != NULL){
-          current = current->getNext();
+      while(current->getNext() != NULL)
+      {
+        current = current->getNext();
       }
       current->setNext(new Node(newStudent));
   }
@@ -193,8 +192,7 @@ void print(Node* head)
 {
   if(head != NULL)
   {
-    cout << "Name: " << (head->getStudent()->firstName) << " " 
-    << (head->getStudent()->lastName) << endl; 
+    cout << "Name: " << (head->getStudent()->firstName) << " " << (head->getStudent()->lastName) << endl; 
     cout << "Student ID: " << (head->getStudent()->studID) << endl;
     cout << "GPA:" << fixed << setprecision(2) << (head->getStudent()->GPA) << endl;
     cout << endl;
@@ -204,30 +202,30 @@ void print(Node* head)
 //Delete a student
 void del(Node*&head, Node* current, Node* previous, int studentID)
 {
+  //nothing to delete
   if(head == NULL)
   {
     return;
   }
+    //nothing to delete
     else if(current == NULL)
     {
        return;
     }
-    //If the entered id matches
+    //If the entered ID is there
     else if(studentID == current->getStudent()->getID())
     {
-      //If the head node has the student who should be deleted
+      //If the head node has the student who user wants to delete
       if(studentID == head->getStudent()->getID())
       {
-         Node* temp = head;
+         Node* found = head;
+        //points head to next node delting the first node
          head = head->getNext();
-         //Deete t
-         temp->~Node(); 
       }
-      //If it's another node
+      //If it is not the head node
       else
       {
         previous->setNext(current->getNext());
-        current->~Node();    
       }
     }
     else
@@ -237,39 +235,58 @@ void del(Node*&head, Node* current, Node* previous, int studentID)
 }
 
 //Generating a random student
-Student* makeStudent()
+void makeStudent(int numofStudents,Node** ht, int htsize)
 {
-  char* arr[100];
-  char* arr2[100];
-  //Filling two arrays with the names from text files
-  fstream first;
-  first.open("first.txt");
-  for(int i = 0; i<100; i++)
+  string firstNames[100];
+  string lastNames[100];
+  int idxFirst = 0;
+  int idxLast = 0;
+  
+  char studentFirstName[100];
+  char studentLastName[100];
+  string strFirst;
+  string strLast;
+  int studentID = 0;
+  float studentGPA = 0.0;
+  Student* student;
+  
+  
+  //read FirstNames into an array
+  fstream streamFirst;
+  streamFirst.open("first.txt");
+  //read each line and store in firstName array 
+  while(streamFirst >> firstNames[idxFirst])
   {
-    char* firstName = new char[50];
-    first >> firstName;
-    arr[i] = firstName;
+    //cout  <<  firstNames[idxFirst] << endl;
+    idxFirst++;
+   
   }
-    fstream last;
-    last.open("last.txt");
-    for(int j = 0; j<100; j++)
-    {
-      char* lastName = new char[50];
-      last >> lastName;
-      arr2[j] = lastName;
-    }
-    //Pulling random names from the text files
-    char* studentFirst = arr[rand() %100 + 1];
-    char* studentLast = arr2[rand() %100 + 1];
-    int studentID = rand() %9000 + 1000;
 
-    float studentGPA = float(rand()%501)/100; //generates random float from 0.00 to 5.00 to use as gpa
+   //read LastNames into an array
+  fstream streamLast;
+  streamLast.open("last.txt");
+  //read each line and store in firstName array 
+  while(streamLast >> lastNames[idxLast])
+  {
+    idxLast++;
+  }
 
-    //Rounding that number to 2 decimal places
-    studentGPA = (studentGPA * 100) / 100;
+  // add number of random number of students
+  for(int i = 0; i < numofStudents; i++)
+  {
+   // srand(time(NULL));
+   // cout << "random = " << rand() % 100 + 1 << endl;
+    strFirst = firstNames[rand()%100 + 1 ];
+    strcpy(studentFirstName, strFirst.c_str());
+    
+
+    strcpy(studentLastName, lastNames[rand() %100 + 1].c_str());
+    studentID = rand() %8999 + 1000;
+    studentGPA = float(rand()%501)/100; //generates random float from 0.00 to 5.00 to use as gpa
     //Returning that student
-    Student* s2 = new Student(studentFirst,studentLast, studentID, studentGPA);
-    return s2;
+    student = new               Student(studentFirstName,studentLastName, studentID, studentGPA);
+    add(ht[hashFunction(student, htsize)], student);  
+  }
 }
 //Rehashing the table
 void rehash(Node** &HashTable, Node* head, int size)
@@ -284,7 +301,7 @@ void rehash(Node** &HashTable, Node* head, int size)
 
 int hashFunction(Student* newStudent, int size)
 {
-  return newStudent->getID() % size;
+   return newStudent->getID() % size;
 }
 
 int collision(Node* head)
