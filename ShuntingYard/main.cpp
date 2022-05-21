@@ -97,7 +97,7 @@ char* ConvertToPostfix(char* infix)
   for (int i = 0; i < strlen(infix); i++)
   {
     char t = infix[i];
-    //for digit
+//for digit
     if (isdigit(t))
     {
       Queue->enqueue(t);
@@ -113,6 +113,7 @@ char* ConvertToPostfix(char* infix)
         {
           if (precedence(o2) > precedence(o1))
           {
+            
             Queue->enqueue(o2);
             Stack->pop();
           }   
@@ -138,7 +139,7 @@ char* ConvertToPostfix(char* infix)
         char o2 = Stack->peek();
         if (o2 == '(')
         {
-          Stack->pop();
+           Stack->pop();
         }
         else
         {
@@ -162,8 +163,8 @@ char* ConvertToPostfix(char* infix)
   
   //Get the queue content to return the converted postfix string to main
   char rtnstr[500];
-  strcpy(rtnstr,Queue->getQueueContent());
-  return(rtnstr);
+  Queue->getQueueContent(rtnstr);
+ return(rtnstr);
 
   
 }//end of function

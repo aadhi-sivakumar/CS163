@@ -24,7 +24,7 @@ class queue
   void dequeue();
   char getQueue();
   void printQueue();
-  char* getQueueContent();
+  void getQueueContent(char* qContent);
   bool isEmpty();
  private:
   // queue variables

@@ -88,18 +88,19 @@ void queue::printQueue()
 }
 
 //trasverses through queue node to get the contents in the queue to return as a string
-char* queue::getQueueContent()
+void queue::getQueueContent(char* qContent)
 {
-  char content[500];
   int idx = 0;
-  
+   
   Node * node = head;
+  
+  char content[500];
   while (node != NULL)
   {
     content[idx++] =  node->data ;
     node = node->next;
   }
   content[idx] = '\0';
- 
-  return content;
+  cout << "Q content in queue.cpp " << content;
+  strcpy(qContent, content);
 }
