@@ -1,5 +1,5 @@
 #include "queue.h"
-
+#include <cstring>
 //constructor
 queue::queue() 
 {
@@ -72,7 +72,7 @@ char queue::getQueue()
   else
   {
     //returns a negative if the queue is empty
-     return NULL; 
+     return '\0'; 
   }
 }
 
@@ -88,12 +88,11 @@ void queue::printQueue()
 }
 
 //trasverses through queue node to get the contents in the queue to return as a string
-void queue::getQueueContent(char* qContent)
+std::string queue::getQueueContent()
 {
   int idx = 0;
    
   Node * node = head;
-  
   char content[500];
   while (node != NULL)
   {
@@ -101,6 +100,5 @@ void queue::getQueueContent(char* qContent)
     node = node->next;
   }
   content[idx] = '\0';
-  cout << "Q content in queue.cpp " << content;
-  strcpy(qContent, content);
+  return content;
 }

@@ -24,7 +24,7 @@ class queue
   void dequeue();
   char getQueue();
   void printQueue();
-  void getQueueContent(char* qContent);
+  std::string getQueueContent();
   bool isEmpty();
  private:
   // queue variables

@@ -16,8 +16,8 @@
 //function prototypes
 int precedence(char operation);
 void test();
-char* ConvertToPostfix(char* infix);
-tree* buildTree(char* Exp);
+std::string ConvertToPostfix(char* infix);
+tree* buildTree(string Exp);
 void PrintInfix(tree* T);
 void PrintPrefix(tree* T);
 void PrintPostfix(tree* T);
@@ -31,7 +31,7 @@ int main()
   //variables
   char inputExp[500];
   char noSpaceInputExp[500];
-  char strPostFix[500];
+  string strPostFix;
   int idx = 0;
   //welcome message
   cout << "Welcome to the Shunting Yard Algorithm! Please enter an equation in infix notation(how it is normally written)." << endl;
@@ -46,12 +46,14 @@ int main()
     }
   }
   noSpaceInputExp[idx] = '\0';
- //converts the postfix expression so it has no spaces
-  strcpy(strPostFix,ConvertToPostfix(noSpaceInputExp));
-  //outputs the expression in postfix using shunting yard algorithmn
-  cout << endl << "Postfix using Shuting Yard Algorithm:" << endl << strPostFix << endl;
+  
+  //converts the postfix expression so it has no spaces
+  strPostFix = ConvertToPostfix(noSpaceInputExp);
  
+  //Build ExpressionTree 
   ExpBTree = buildTree(strPostFix);
+  
+  
   //Display Btree in Infix format
   cout << endl << "Infix:" << endl;
   PrintInfix(ExpBTree);
@@ -89,7 +91,7 @@ int precedence(char operation)
 
 //shunting yard algortithmn
 //used the wikipedia link on canvas to help me write the shunting yard algorithmn
-char* ConvertToPostfix(char* infix)
+std::string ConvertToPostfix(char* infix)
 {
   stack* Stack = new stack();
   queue* Queue = new queue();
@@ -162,15 +164,13 @@ char* ConvertToPostfix(char* infix)
   }//end of while
   
   //Get the queue content to return the converted postfix string to main
-  char rtnstr[500];
-  Queue->getQueueContent(rtnstr);
- return(rtnstr);
+  return Queue->getQueueContent();
 
   
 }//end of function
 
 //building the binary tree
-tree* buildTree(char* postfix)
+tree* buildTree(string postfix)
 {
   stack* Stack = new stack();
   tree* Btree = NULL;

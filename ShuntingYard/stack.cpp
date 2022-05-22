@@ -37,6 +37,7 @@ char stack::peek()
   else 
   {
     cout << "Stack is empty.";
+    return '\0';
   }
 }
 ////peek for the tree with pointer 
@@ -49,6 +50,7 @@ tree* stack::peekNode()
   else 
   {
     cout << "Stack is empty.";
+    return NULL;
   }
 }
 //pop stack node
