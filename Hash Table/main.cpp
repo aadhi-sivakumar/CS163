@@ -1,63 +1,16 @@
-/*#include <iostream>
+//Author: Aadhi Sivakumar
+//Assignment: Hash Table
+//Description: Student list but with a hash table
+//Sourcs: Dad and Zayeed helped me
+
+#include <iostream>
 #include <iomanip>
 #include <cctype>
 #include <fstream>
-#include <cstring>*/
+#include <cstring>
 #include "node.h"
-
 using namespace std;
 
-/*//student info in struct
-struct Student 
-{ 
-  char firstName[100];
-  char lastName[100];
-  int studID;
-  float GPA;
-
-public:
-  Student(char* newFirstName, char* newLastName, int newStudID, float newGPA) 
-  {
-    strcpy(firstName, newFirstName);
-    strcpy(lastName, newLastName);
-    studID = newStudID;
-    GPA = newGPA;
-  }
-};*/
-
-/*class Node 
-{ 
-  Student* student;
-  Node* next;
-
-public:
-  Node(Student* newStudent) 
-  { 
-    student = newStudent;
-    next = NULL;
-  }
-
-  Student* getStudent() 
-  { //getter for student
-    return student;
-  }
-
-  void setStudent(Student* newStudent) 
-  { //setter for student
-    student = newStudent;
-  }
-
-  Node* getNext() 
-  { //getter for next node
-      return next;
-  }
-
-  void setNext(Node* Next) 
-  { //setter for next node
-      next = Next;
-  }
-
-};*/
 
 //function prototypes
 void displayMenu();
