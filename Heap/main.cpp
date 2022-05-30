@@ -1,31 +1,41 @@
+//Author: Aadhi Sivakumar
+//Assignment: Heap
+//Description:Program that creates a max heao and user can perform functions on it.
+//Sources: Dad helped me with the deletion. 
+//// reference https://www.geeksforgeeks.org/how-to-split-a-string-in-cc-python-and-java/
+
 #include <iostream>
 #include <cstring>
+#include <cmath>
 #include <fstream>
+#include <iomanip>
 #include <math.h>
-#include "node.h"
+#include <string.h>
+using namespace std;
+
 
 //function prototypes
 void displayMenu();
-void add(Node* newNode,Node* &head, Node* arr[], int &sizeCount);
-void print(Node* head, int space);
-void deleteTree(Node* arr[], int size);
+void add(int* &heap,int input); 
+void print(int* &heap,int i);
+void deleteLargest(int* &heap);
+void deleteTree(int* &heap);
+// reference https://www.geeksforgeeks.org/how-to-split-a-string-in-cc-python-and-java/
+void simple_tokenizer(string s, int* heap);
 
-int main() 
+int main()
 {
-  //variables
-  int size = 1; 
-  Node* heap[100];
-  int arr[100];
-  Node* head = NULL;
+  //array of numbers
+  int* heap = new int[100];
   char option[100];
-
+  
   //Welcome Message
    cout << "Welcome to Heap!" << endl; 
-
+  
   do
   {
     //show the display menu
-    displayMenu();
+    displayMenu(); 
 
     //input from user
     cin >> option;
@@ -37,75 +47,115 @@ int main()
    		option[i] = toupper(option[i]);
 		}	
 
+    //if user enters add
     if (strcmp(option, "ADD") == 0)
     {
       //Asks if they are entering manually or by file name
-      cout << "Would you like to add numbers to the heap manually(type 'MANUALLY') or by file name (type 'FILE')?" << endl;
-      char input[100];
-      cin >> input;
+      cout << "Would you like to add numbers to the heap manually(type 'MANUAL') or by file name (type 'FILE')?" << endl;
+      char name[100];
+      cin >> name;
 
-      //convert input to uppercase
-      for (int i=0; i < strlen(input); i++)
+      //convert name to uppercase
+      for (int i=0; i < strlen(name); i++)
 		  {		
-   		  option[i] = toupper(input[i]);
+   		  name[i] = toupper(name[i]);
 		  }	
-      
+
       //Adding through direct input
-      if(strcmp(input, "MANUALLY") == 0)
+      if(strcmp(name, "MANUAL") == 0)
       {
-        cout << "Insert a number to the heap. If you want to add more than one number, repeat the command once again after you enter the number." << endl;
-        int number = 0;
-        cin >> number;
-        Node* newNode = new Node(number);
-        add(newNode, head, heap, size);
+        cin.ignore();
+        cout << "Enter sequence of numbers sperated by spaces: " << endl;
+         string s;
+         getline(cin, s);
+         simple_tokenizer(s, heap);
+         cout << endl;
+       
+   
       }
 
-      else if(strcmp(input, "FILE") == 0)
+      //if user wants to input by file
+      else if(strcmp(name, "FILE") == 0)
       {
-        int temp = 0;
-        cout << "Enter a file name: (e.g. filename.txt)" << endl;
-        char filename[100];
-        cin >> filename;
+        cout<<"File choice available: " << endl;
+        cout<<"numbers.txt"<<endl;
+        cout<<"Enter a file name: ";
+        char fileName[100];
+        cin >> fileName;
 
-        //Opens the file and adds the numbers into an array
-	      fstream numbers;
-        numbers.open(filename);
-
-        for(int i = 0; i < 100; i++)
+        //if file is there
+        if(strcmp(fileName,"numbers.txt")==0)
         {
-          numbers >> temp;
-          //Adds the node to the heap
-          Node* newNode = new Node(temp);
-          add(newNode, head, heap, size);
-	      }
-      }    
-  }
-  //prints the heap
-  else if (strcmp(option, "PRINT") == 0)
-  {
-    cout << "PRINTING HEAP" << endl;
-    print(head, 0);
-  }
+          ifstream numbers;
+          //opens file
+          numbers.open("numbers.txt");
+          string numbersInFile;
+          int input;
+          while(numbers)
+          {
+            //read in numbers from file
+            numbers >> numbersInFile;
+            //converts string to integer
+            input=stoi(numbersInFile);
+            add(heap, input);
+          }
+          numbers.close();
+        }
+        else
+        {
+	        cout<<"The file does not exist."<<endl;
+        }
+      }   
+    }
+    //if user enters print
+    else if (strcmp(option, "PRINT") == 0)
+    { 
+      print(heap, 1);
+    }
+      
+    //if user enters delete
+    else if (strcmp(option, "DELETE") == 0)
+    {
+      cout << "Do you want to delete the largest value or the entire tree? Enter 'LARGEST' to delete the largest value and 'ENTIRE' to clear the tree." << endl;
+      char response[100];
+      cin >> response;
 
-  else if (strcmp(option, "DELETE") == 0)
-  {
-    deleteTree(heap, size-2);
-    size = 1;
-    head = NULL;
+      //convert response to uppercase
+      for (int i=0; i < strlen(response); i++)
+		  {		
+   		  response[i] = toupper(response[i]);
+		  }
+      //if user wants to delete the largest value
+      if (strcmp(response, "LARGEST") == 0)
+      {
+        deleteLargest(heap);
+      }
+      //if user wants to clear the entire tree
+      else if (strcmp(response, "ENTIRE") == 0)
+      {
+        deleteTree(heap);
+      }
+      else
+      {
+        cout << "Invalid option. Choose one of the two." << endl;
+      }
+    }
+    //if user enters quit
+    else if(strcmp(option, "QUIT") == 0)
+    {
+      break;
+    }
+    else
+    {
+      cout << "Invalid Input, please enter a valid option." << endl;
+    }  
   }
+  while (strcmp(option,"QUIT") != 0);
 
-  else if(strcmp(option, "QUIT") == 0)
-  {
-    break;
-  }
-
-  else
-  {
-    cout << "Invalid Input, please enter a valid option." << endl;
-  }
+  return 0;
 }
-while (strcmp(option,"QUIT") != 0);
-}
+
+
 //user display menu with available options
 void displayMenu()
 {
@@ -113,166 +163,87 @@ void displayMenu()
 	cout << "Select an option:" << endl << endl; 
 	cout << "ADD--->Type 'ADD' to add to the heap: " << endl;
   cout << "PRINT--->Type 'PRINT' to print the heap: " << endl;
-	cout << "DELETE--->Type 'DELETE' to delete: " << endl;
+	cout << "DELETE--->Type 'DELETE' to delete heap: " << endl;
 	cout << "QUIT--->Type 'QUIT' to exit the program: " << endl << endl;
 }
 
-//add function
-void add(Node* newNode, Node*& head, Node* arr[], int& sizeCount) 
-{ 
-  //if heap is empty
-  if (head == NULL)
-  {
-    head = newNode;
-    arr[sizeCount - 1] = head;
-    sizeCount++;
-  }
-  //divide size by 2 since each child has two parents
-  else
-  {
-    int pIndex = sizeCount/2;
-    Node* parent = arr[pIndex - 1];
-    Node* curr = newNode;
-
-    //if left is empty, place node there
-    if(parent->getLeft() == NULL)
-    {
-      parent->setLeft(newNode);
-      arr[sizeCount-1] = newNode;
-      sizeCount++;
-    }
-
-    //If left is occupied, add the node to the right
-    if(parent->getLeft() == NULL)
-    {
-      parent->setLeft(newNode);
-      arr[sizeCount-1] = newNode;
-      sizeCount++;
-    }
-
-    //Sets up the heap as amax heap from least to greatest
-    while(arr[pIndex-1]->getData() < curr->getData())
-    {
-        int newData = curr->getData();
-        curr->setData(arr[pIndex-1]->getData());
-        arr[pIndex-1]->setData(newData);
-        curr = arr[pIndex-1];
-        if(pIndex == 1)
-        {
-          break;
-        }
-        else
-        {
-          pIndex = pIndex/2;
-        }
-    } 
-  }
-} 
-
-void print(Node* head, int space) 
+//add to heap
+void add(int* &heap, int input)
 {
-  if(head == NULL)
+  for(int i = 1; i < 100;i++)
   {
-    return;
+    //if user enters a value greater than the vaue in heap, replaces the greater value with the smaller
+    if(input > heap[i])
+    {
+      int x = heap[i];
+      heap[i]= input;
+      add(heap,x);
+      break;
+    }
   }
-  //This creates space between levels of the tree
-  space = space + 10;
+}
 
-  //Start from the right
-  print(head->getRight(), space);
-
-  //Print the current node after a new line
-  cout << endl;
-  for(int i = 0; i < space; i++)
+//prints tree
+void print (int* &heap, int i)
+{
+  //left child
+  if(i*2 <= 100 && heap[i*2]!=0)
   {
-    cout << " ";
+    print(heap,(i*2));
   }
-  cout << head->getData() << '\n';
+  int space=(int) floor(i / 2);
+  //prints spaces
+  for(int b = 0; b< space; b++)
+  {
+    cout << "\t";
+  }
+  cout<<heap[i]<<endl;
+  //right child
+  if(i*2+1 <= 100 && heap[i*2+1]!=0)
+  {
+    print(heap,(i*2+1));
+  }
+}
+
+//delete function
+////clears the tree and prints the array from greatest to least
+void deleteLargest(int* &heap)
+{
+  //cout << "Output Largest: ";
+   if(heap[1]!=0)
+  {
+    int i = 1;
+    //outputs largest number
+    cout << heap[1] << " ";
+    while(heap[i]!=0)
+    {
+      heap[i]=heap[i+1];
+      i++;
+    }
+  }
+
   
-  //Onto the left
-  if(head->getLeft() != NULL)
-  {
-  print(head->getLeft(), space);
-  }
+  
+}
+//deletes entire tree using recursion
+void deleteTree(int* &heap)
+{
+  int i = 1;
+  while (heap[i] != 0)
+    {
+      deleteLargest(heap);
+    }
+    cout << endl;
 }
 
-//Deletes the tree
-void deleteTree(Node* arr[], int size)
+// reference https://www.geeksforgeeks.org/how-to-split-a-string-in-cc-python-and-java/
+void simple_tokenizer(string s, int* heap)
 {
-    //If the tree is empty
-    if(arr[0] == NULL)
+    stringstream ss(s);
+    string word;
+    while (ss >> word) 
     {
-      cout<< "Nothing to delete!" << endl;
-        return;
+        add(heap, stoi(word));
     }
-    //If the size is 0, print the one
-    else if(size == 0)
-    {
-        cout << arr[0]->getData() << endl;
-        delete arr[0];
-        arr[0] = NULL;
-    }
-    //Swaps the first and last node if the last node is bigger
-    else 
-    {
-        if(arr[0]->getData() > arr[size]->getData())
-        {
-          int temp = arr[size]->getData();
-          arr[size]->setData(arr[0]->getData());
-          arr[0]->setData(temp);
-        }
-    int temp2 = size + 1;
-    int parentIndex = floor(temp2/2);
-    if(arr[parentIndex-1]->getLeft() == arr[size])
-    {
-        arr[parentIndex-1]->setLeft(NULL);
-        cout << arr[size]->getData() << endl;
-        delete arr[size];
-    }
-    else if(arr[parentIndex-1]->getRight() == arr[size])
-    {
-        arr[parentIndex-1]->setRight(NULL);
-        cout << arr[size]->getData() << endl;
-        delete arr[size];
-    }
-    //After the last node is deleted, the heap is put back into order
-    Node* curr = arr[0];
-    while(curr->getLeft() != NULL || curr->getRight() != NULL)
-    {
-        //Compares the value of data in child nodes
-        //If the left node is larger
-        if(curr->getNewLeft() > curr->getNewRight())
-        {
-          int num = curr->getData();
-          curr->setData(curr->getLeft()->getData());
-          curr->getLeft()->setData(num);
-          curr = curr->getLeft();
-        }
-        //If the right node is larger
-        else if(curr->getNewLeft() < curr->getNewRight())
-        {
-            int num = curr->getData();
-            curr->setData(curr->getRight()->getData());
-            curr->getRight()->setData(num);
-            curr = curr->getRight();
-        }
-        else
-        {
-          //If two child nodes have the same value
-          if(curr->getNewLeft() != -1)
-          {
-            int num = curr->getData();
-            curr->setData(curr->getNewLeft());
-            curr->getLeft()->setData(num);
-            curr = curr->getLeft();
-          }
-          else
-          {
-            return;
-          }
-        }
-    }
-    //Calls itself again on a one-size smaller array
-    deleteTree(arr, size-1);
-  }
 }
+
