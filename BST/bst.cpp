@@ -75,7 +75,6 @@ bst* bst::insertNode(bst* root, int data)
 
     if (root == NULL)
     { 
-      
     	bst* newNode = new bst();
 	newNode->data = data;
     	newNode->left = NULL;

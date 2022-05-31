@@ -2,7 +2,7 @@
 #ifndef BST_H
 #define BST_H
 #include <string>
-
+using namespace std;
 class bst
 {
   public:
@@ -17,8 +17,7 @@ class bst
     bst* removeNode(bst*root, int val);
     bool searchBST(bst* root, int val);
     void printBST(bst* node);
-    void printBST(const std::string& prefix, bst* root, bool isLeft);
-
+    void printBST(const string& prefix, bst* root, bool isLeft);
 
   private:
     //bst 
