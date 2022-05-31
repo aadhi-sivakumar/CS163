@@ -1,6 +1,7 @@
 #include "bst.h"
 #include <iostream>
 #include <cstring>
+#include <string>
 using namespace std;
 
 //constructor
@@ -14,10 +15,59 @@ bst::~bst()
   
 }
 
-//print bst
+//arrage BST
+bst* bst::findMinNode(bst* node)
+{
+    bst* currNode = node;
+ 
+    /* loop down to find the leftmost leaf */
+    while ((currNode != NULL) && (currNode->left != NULL))
+    {
+        currNode = currNode->left;
+    }
+ 
+    return currNode;
+}
+ 
+
+void bst::printBST(const std::string& prefix, bst* root, bool isLeft)
+{
+    if( root != NULL )
+    {
+        if (prefix != "")
+        {
+	   cout << prefix;
+	   if (isLeft == true)
+           {
+              cout <<  "├──";
+	   }
+	   else
+           {
+              cout << "└──";
+	   }
+	}
+
+        // print the value of the node
+        cout << root->data << endl;
+
+        if (prefix != "")
+	{
+		printBST( prefix + (isLeft ? "│   " : "    "), root->left, true);
+       		printBST( prefix + (isLeft ? "│   " : "    "), root->right, false);
+	}
+	else
+	{
+               printBST(" ", root->left, true );
+               printBST(" ", root->right, false);
+	}
+    }   
+}
+
 void bst::printBST(bst* root)
 {
+    printBST("", root, false);    
 }
+
 
 //insert Node
 bst* bst::insertNode(bst* root, int data) 
@@ -25,11 +75,12 @@ bst* bst::insertNode(bst* root, int data)
 
     if (root == NULL)
     { 
+      
     	bst* newNode = new bst();
 	newNode->data = data;
     	newNode->left = NULL;
     	newNode->right = NULL;
-        root = newNode; 
+        return newNode; 
     }	
     else
     {
@@ -46,34 +97,74 @@ bst* bst::insertNode(bst* root, int data)
 }
 
 //Remove Node
-bool bst::removeNode(int data)
-{
-  return true;
+bst* bst::removeNode(bst* root, int data)
+{ 
+    // check for empty
+    if (root == NULL)
+    {
+        return NULL;
+    }
+    
+    if (data < root->data)
+    {
+        root->left = removeNode(root->left, data);
+    }
+    else if (data > root->data)
+    {
+        root->right = removeNode(root->right, data);
+    }
+    // if key is same as root's key, then This is the node
+    // to be deleted
+    else 
+    {
+        // node has no child
+        if (root->left==NULL and root->right==NULL)
+        {   delete(root);
+            return NULL;
+        }
+        // node with only one child or no child
+        else if (root->left == NULL)
+        {
+            bst* temp = root->right;
+            delete(root);
+            return temp;
+        }
+        else if (root->right == NULL)
+        {
+            bst* temp = root->left;
+            delete(root);
+            return temp;
+        }
+ 
+        // node with two children: Get the inorder successor
+        bst* temp = findMinNode(root->right);
+ 
+        // Copy the inorder successor's content to this node
+        root->data = temp->data;
+ 
+        // Delete the inorder successor
+        root->right = removeNode(root->right, temp->data);
+    }
+    return root;
 }
 //search Node
 bool bst::searchBST(bst* root, int data)
 {
   if (root == NULL)
   {
-     cout << "root is empty" << endl;
      return false;
   }
   else if (root->data == data) 
   {
-     cout << "found it" << endl;
-	  return true;
+     return true;
   }
   else if (data <= root->data)
   {
-     cout << "Proessing : " << root->data << " moving left next " << endl;
-  
-  
-	     return searchBST(root->left, data); 
+     return searchBST(root->left, data); 
   }
   else
   {
-       cout << "processing : " << root->data << " moving right next " << endl;
-      	  return searchBST(root->right, data);
+     return searchBST(root->right, data);
   }
 }
 
