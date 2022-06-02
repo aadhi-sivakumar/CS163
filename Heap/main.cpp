@@ -91,13 +91,14 @@ int main()
           numbers.open("numbers.txt");
           string numbersInFile;
           int input;
-          while(numbers)
+          //read in numbers from file
+          numbers >> numbersInFile;
+          while(!numbers.eof())
           {
-            //read in numbers from file
-            numbers >> numbersInFile;
             //converts string to integer
             input=stoi(numbersInFile);
             add(heap, input);
+	    numbers >> numbersInFile;
           }
           numbers.close();
         }
