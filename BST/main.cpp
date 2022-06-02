@@ -199,10 +199,10 @@ void displayMenu()
 {
   cout << endl;
 	cout << "Select an option:" << endl << endl; 
-	cout << "ADD--->Type 'ADD' to add to the heap: " << endl;
-  cout << "PRINT--->Type 'PRINT' to print the heap: " << endl;
-	cout << "DELETE--->Type 'DELETE' to delete heap: " << endl;
-  cout << "SEARCH--->Type 'SEARCH' to see if a number is in the heap: " << endl;
+	cout << "ADD--->Type 'ADD' to add to the Binary Search Tree: " << endl;
+  cout << "PRINT--->Type 'PRINT' to print the Binary Search Tree: " << endl;
+	cout << "DELETE--->Type 'DELETE' to delete from the Binary Search Tree: " << endl;
+  cout << "SEARCH--->Type 'SEARCH' to see if a number is in the Binary Search Tree: " << endl;
 	cout << "QUIT--->Type 'QUIT' to exit the program: " << endl << endl;
 }
 
