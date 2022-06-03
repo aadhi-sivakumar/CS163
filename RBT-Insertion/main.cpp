@@ -19,8 +19,8 @@ void recurciveAdd(Node* &root, int value, Node* curr, Node* &newptr);
 void manualAdd(Node* &root, Node* &newptr);
 void fileAdd(Node* &root, Node* &newptr);
 bool search(Node* curr, int num, Node* &newptr);
-void print(Node* curr, int depth);
-void check(Node* &root, Node* curr);
+void print(Node* curr, int space);
+void maintain(Node* &root, Node* curr);
 
 int main() 
 {
@@ -74,13 +74,27 @@ int main()
     //if user enters print
     else if (strcmp(option, "PRINT") == 0)
     {   
+      
     }
     else if (strcmp(option, "DELETE") == 0)
     {
+      
     }
     //if user enters search
     else if (strcmp(option, "SEARCH") == 0)
     {
+      cout << "Enter the number you want to search for: " << endl;
+      int number;
+      cin >> number;
+      bool found = search(root, number, newptr);
+      if (found == true)
+      {
+        cout << "Number: " << number << " exists in the Binary Tree." << endl;
+      }
+      else
+      {
+        cout << "Number: " << number << " does not exist in the Binary Tree." << endl;
+      }
     }
     //if user enters quit
     else if(strcmp(option, "QUIT") == 0)
@@ -110,24 +124,28 @@ void displayMenu()
 //recursive add
 void recurciveAdd(Node* &root, int value, Node* curr, Node* &newptr) 
 {
+  //adds the left child
   if (curr->data >= value && curr->getLeft() == NULL) 
   {
     curr->setLeft(new Node(value));
     curr->getLeft()->parent = curr;
     newptr = curr;
-    check(root, curr->getLeft());
+    maintain(root, curr->getLeft());
   }
+  //adds the right child
   else if (curr->data < value && curr->getRight() == NULL) 
   {
     curr->setRight(new Node(value));
     curr->getRight()->parent = curr;
     newptr = curr;
-    check(root, curr->getRight());
+    maintain(root, curr->getRight());
   }
+  //iterates through the left side of the tree and adds the node
   else if (curr->data >= value) 
   {
     recurciveAdd(root, value, curr->getLeft(), newptr);
   }
+  //iterates through the right side of the tree and adds the node
   else if (curr->data < value) 
   {
     recurciveAdd(root, value, curr->getRight(), newptr);
@@ -144,11 +162,13 @@ void manualAdd(Node* &root, Node* &newptr)
   {
     root = new Node(num);
     root->parent = NULL;
-    check(root, root);
+    //checks to see if the properties are maintained
+    maintain(root, root);
   }
   //if root is not empty
   else if (root != NULL)
   {
+    //adds the node
     recurciveAdd(root, num, root, newptr);
   }
 }
@@ -180,7 +200,8 @@ void fileAdd(Node* &root, Node* &newptr)
       {
         root = new Node(input);
         root->parent = NULL;
-        check(root, root);
+        //checks to see if properties are maintained
+        maintain(root, root);
       }
       // if root is not empty
       else if (root != NULL) 
@@ -201,9 +222,6 @@ void fileAdd(Node* &root, Node* &newptr)
 //search
 bool search(Node* curr, int num, Node* &newptr) 
 {
-  cout << "Enter the number you want to search for" << endl;
-  int number;
-  cin >> number;
   bool searchResult = false;
 
   if (curr->data == num) 
@@ -228,4 +246,7 @@ bool search(Node* curr, int num, Node* &newptr)
   }
   return false; 
 }
+
+//print
+
 
