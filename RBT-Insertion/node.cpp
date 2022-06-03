@@ -1,71 +1,53 @@
-#include <iostream>
 #include "node.h"
+#include <iostream>
 using namespace std;
 
-//Constructor
-Node::Node() 
-{ 
+//Constructer
+Node::Node(int newData) 
+{
   left = NULL;
   right = NULL;
-  parent = NULL;
-  data = 0;
-  color = 1;
+  color = true;
+  data = newData;
 }
-//Destructor
-Node::~Node() 
-{ 
-  left = NULL;
-  right = NULL;
-  parent = NULL;
+
+//destructor
+Node::~Node()
+{
+  
 }
-//Getters
-Node* Node::getLeft() 
+
+//getters
+Node* Node::getLeft()
 {
   return left;
 }
-
 Node* Node::getRight() 
 {
   return right;
 }
-
 Node* Node::getParent() 
 {
   return parent;
 }
-
-int Node::getData() 
+int Node::getData()
 {
   return data;
 }
-
-int Node::getColor() 
+bool Node::getColor() 
 {
   return color;
 }
 
-//Setters
-void Node::setLeft(Node* newLeft) 
+//setters
+void Node::setRight(Node* newright) 
 {
-  left = newLeft;
+  right = newright;
 }
-
-void Node::setRight(Node* newRight) 
+void Node::setLeft(Node* newleft) 
 {
-  right = newRight;
+  left = newleft;
 }
-
-void Node::setParent(Node* newParent) 
-{
-  parent = newParent;
-}
-
-void Node::setData(int newData) 
-{
-  data = newData;
-}
-
-void Node::setColor(int newColor) 
-{
-  color = newColor;
+void Node::setParent(Node* newparent) {
+  parent = newparent;
 }
