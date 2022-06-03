@@ -14,17 +14,22 @@
 using namespace std;
 
 //Function Prototypes
+//display
 void displayMenu();
+//search
+bool searchRBT(Node* root, int data);
+//print
+void printRBT(Node* root);
+void printRBT(const string& prefix, Node* root, bool isLeft);
+//insert
 void recurciveAdd(Node* &root, int value, Node* curr, Node* &newptr);
 void manualAdd(Node* &root, Node* &newptr);
 void fileAdd(Node* &root, Node* &newptr);
-bool search(Node* curr, int num, Node* &newptr);
-void print(Node* curr, int space);
-void maintain(Node* &root, Node* curr);
+//check
+//void maintain(Node* &root, Node* curr);
 
 int main() 
 {
-  int count = 1;
   Node* root = NULL;
   Node* newptr = NULL;
   char option[100];
@@ -46,35 +51,20 @@ int main()
    		option[i] = toupper(option[i]);
 		}	
 
-    //if user enters add
+    //if user enters add, add direct input
     if (strcmp(option, "ADD") == 0)
     {
-      //Asks if they are entering manually or by file name
-      cout << "Would you like to add numbers to the Red-Black Tree manually(type 'MANUAL') or by file name (type 'FILE')?" << endl;
-      char name[100];
-      cin >> name;
-
-      //convert name to uppercase
-      for (int i=0; i < strlen(name); i++)
-		  {		
-   		  name[i] = toupper(name[i]);
-		  }	
-
-      //Adding through direct input
-      if(strcmp(name, "MANUAL") == 0)
-      {
         manualAdd(root, newptr);
-      }
-      //if user wants to input by file
-      else if(strcmp(name, "FILE") == 0)
-      {
-        fileAdd(root, newptr);
-      }
+    }
+    //if user wants to input by file
+    else if(strcmp(option, "READ") == 0)
+    {
+      fileAdd(root, newptr);
     }
     //if user enters print
     else if (strcmp(option, "PRINT") == 0)
     {   
-      
+      printRBT(root);
     }
     else if (strcmp(option, "DELETE") == 0)
     {
@@ -86,8 +76,9 @@ int main()
       cout << "Enter the number you want to search for: " << endl;
       int number;
       cin >> number;
-      bool found = search(root, number, newptr);
-      if (found == true)
+      bool searchResult = false;
+      searchResult = searchRBT(root, number);
+      if (searchResult)
       {
         cout << "Number: " << number << " exists in the Binary Tree." << endl;
       }
@@ -115,10 +106,12 @@ void displayMenu()
 {
   cout << endl;
 	cout << "Select an option:" << endl << endl; 
-	cout << "ADD--->Type 'ADD' to add to the Red-Black Tree: " << endl;
+	cout << "ADD--->Type 'ADD' to add to the Red-Black Tree manually: " << endl;
+  cout << "READ--->Type 'READ' to add to the Red-Black Tree by file: " << endl;
   cout << "PRINT--->Type 'PRINT' to print the Red-Black Tree: " << endl;
-	cout << "DELETE--->Type 'DELETE' to delete from the Red-Black Tree: " << endl;
   cout << "SEARCH--->Type 'SEARCH' to see if a number is in the Red-Black Tree: " << endl;
+	cout << "DELETE--->Type 'DELETE' to delete from the Red-Black Tree: " << endl;
+  cout << "QUIT--->Type 'QUIT' to exit the program:  " << endl;
 }
 
 //recursive add
@@ -130,7 +123,7 @@ void recurciveAdd(Node* &root, int value, Node* curr, Node* &newptr)
     curr->setLeft(new Node(value));
     curr->getLeft()->parent = curr;
     newptr = curr;
-    maintain(root, curr->getLeft());
+    //maintain(root, curr->getLeft());
   }
   //adds the right child
   else if (curr->data < value && curr->getRight() == NULL) 
@@ -138,7 +131,7 @@ void recurciveAdd(Node* &root, int value, Node* curr, Node* &newptr)
     curr->setRight(new Node(value));
     curr->getRight()->parent = curr;
     newptr = curr;
-    maintain(root, curr->getRight());
+    //maintain(root, curr->getRight());
   }
   //iterates through the left side of the tree and adds the node
   else if (curr->data >= value) 
@@ -163,7 +156,7 @@ void manualAdd(Node* &root, Node* &newptr)
     root = new Node(num);
     root->parent = NULL;
     //checks to see if the properties are maintained
-    maintain(root, root);
+    //maintain(root, root);
   }
   //if root is not empty
   else if (root != NULL)
@@ -201,7 +194,7 @@ void fileAdd(Node* &root, Node* &newptr)
         root = new Node(input);
         root->parent = NULL;
         //checks to see if properties are maintained
-        maintain(root, root);
+        //maintain(root, root);
       }
       // if root is not empty
       else if (root != NULL) 
@@ -218,35 +211,62 @@ void fileAdd(Node* &root, Node* &newptr)
     cout<<"The file does not exist."<<endl;
   }    
 }
-
 //search
-bool search(Node* curr, int num, Node* &newptr) 
+bool searchRBT(Node* root, int data)
 {
-  bool searchResult = false;
-
-  if (curr->data == num) 
+  if (root == NULL)
   {
-    newptr = curr;
+    return false;
+  }
+  else if (root->data == data) 
+  {
     return true;
   }
-  else 
+  else if (data <= root->data)
   {
-    if (curr->data > num && curr->getLeft() != NULL) 
-    {
-      searchResult = search(curr->getLeft(), num, newptr);
-    }
-    else if (curr->data < num && curr->getRight() != NULL)
-    {
-      searchResult = search(curr->getRight(), num, newptr);
-    }
-    if (searchResult)
-    {
-      return true;
-    }
+    return searchRBT(root->left, data); 
   }
-  return false; 
+  else
+  {
+     return searchRBT(root->right, data);
+  }
 }
 
 //print
+void printRBT(const string& prefix, Node* root, bool isLeft)
+{
+  if( root != NULL )
+  {
+    if (prefix != "")
+    {
+       cout << prefix;
+       if (isLeft == true)
+       {
+         cout <<  "├──";
+       }
+       else
+       {
+         cout << "└──";
+       }
+	  }
 
+    // print the value of the node
+    cout << root->data << endl;
+
+    if (prefix != "")
+	  {
+  		printRBT( prefix + (isLeft ? "│   " : "    "), root->left, true);
+      printRBT( prefix + (isLeft ? "│   " : "    "), root->right, false);
+	  }
+	  else
+	  {
+       printRBT(" ", root->left, true );
+       printRBT(" ", root->right, false);
+	  }
+  }   
+}
+void printRBT(Node* root)
+{
+  printRBT("", root, false);    
+}
 
