@@ -1,32 +1,41 @@
-#ifndef NODE_H
-#define NODE_H
-#include <iostream>
 
-class Node 
+#include <iostream>
+#include <string.h>
+using namespace std;
+
+struct node
 {
+    int data;  
+    bool color = true; //true means RED
+    node * left;
+    node * right;
+    node * parent;
+};
+typedef node *nodePtr;
+
+class rbtNode 
+{
+private:
+  nodePtr root;
+  nodePtr TNULL;
+
  public:
   //constructor
-  Node(int newData);
-
+  rbtNode();
   //destructor
-  ~Node();
-  //Variables
-  Node* left;
-  Node* right;
-  Node* parent;
-  bool color; //True is Red, False is black
-  int data;
-  //Function
-  //getters
-  Node* getLeft();
-  Node* getRight();
-  Node* getParent();
-  int getData();
-  bool getColor();
-  //setters
-  void setLeft(Node* newLeft);
-  void setRight(Node* newRight);
-  void setParent(Node* newParent);
+  ~rbtNode();
+
+  //functions
+  void addkey(int data);
+  void maintainRBT(node* node);
+  void rotateLeft(node* node);
+  void rotateRight(node* node);
+  void printRBT();
+  void printRBT(const string &prefix,node* curr, bool isLeft); 
+
+
+//private: 
+ //  node* root;
 };
 
-#endif
+
