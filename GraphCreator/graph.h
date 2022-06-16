@@ -8,46 +8,41 @@ using namespace std;
 
 struct edge;
 
-struct node 
+//structure to build nodes into the ajacency table
+struct vertex 
 {
   int id;
   string name;
-  bool flagged = false;
   edge* next;
 };
 
+//struct to connect the two nodes
 struct edge 
 {
   int weight;
-  node* start;
-  node* end;
-};
-
-struct step 
-{
-  node* vertex;
-  int shortest = numeric_limits<int>::max();
-  node* prevertex;
+  vertex* start;
+  vertex* end;
 };
 
 class Graph 
 {
  public:
+//functions
   Graph();
   ~Graph();
   void print();
-  void addNode(string newLabel);
-  void removeNode(string label);
-  void addEdge(string, string );
+  void addVertex(string newLabel);
+  void removeVertex(string label);
+  void addEdge(string newStart, string newEnd);
   void removeEdge(string start, string end);
-  void shortestPath(string, string);
  private:
+//variables
   int size = 0;
-  step* path[20];
-  node* nodeArray[20];
+  vertex* nArray[20];
   bool adjTable[20][20] = {false};
-  node* findNode(string);
-  edge* findEdge(node*, node*);
+//fund edge functions
+  vertex* findVertex(string label);
+  edge* findEdge(vertex* startNode, vertex* endNode);
 };
 
 #endif

@@ -1,3 +1,8 @@
+////Author: Aadhi Sivakumar
+//Assignment: Graph Creator
+//Description: Creating a graph where you can add and remove vertices.
+//Sources: Dad helped with making the table look nice
+
 #include "graph.h"
 #include <cstring>
 #include <iomanip>
@@ -9,7 +14,7 @@ void displayMenu();
 int main() 
 {
   Graph* graph = new Graph();
-  char option[50];
+  char option[10];
   
   //welcome message
   cout << "Welcome to Graph Creator!" << endl;
@@ -24,7 +29,7 @@ int main()
     cout << endl;
 
     //converts user input to uppercase so it can accept any input upper or lower case or mix.
-    for (int i=0; i < strlen(option); i++)
+    for (int i = 0; i < strlen(option); i++)
 		{		
    		option[i] = toupper(option[i]);
 		}
@@ -34,7 +39,7 @@ int main()
     {
       cout << "Add vertex: ";
       cin >> option;
-      graph->addNode(option);
+      graph->addVertex(option);
       graph->print();
     }
 
@@ -56,7 +61,7 @@ int main()
     {
       cout << "Remove vertex: ";
       cin >> option;
-      graph->removeNode(option);
+      graph->removeVertex(option);
       graph->print();
     }
 
@@ -76,7 +81,7 @@ int main()
     {
       graph->print();
     }
-
+    
     //quit
     else if (strcmp(option, "Q") == 0)
     {
@@ -84,7 +89,7 @@ int main()
     }
 
     //invalid input
-        else
+     else
     {
       cout << "Invalid Input, please enter a valid option." << endl;
     }  
@@ -102,6 +107,6 @@ void displayMenu()
 	cout << "REMOVE VERTEX--->Type 'RV' to remove a vertex from the graph and remove all edges to that Vertex: " << endl;
   cout << "REMOVE EDGE--->Type 'RE' to remove an edge between two vertex labels: " << endl;
   cout << "PRINT--->Type 'P' to print the adj table: " << endl;
-	cout << "FIND SHORTEST PATH--->Type 'FSP' to find the shortest path between two vertex: " << endl << endl;
+	//cout << "FIND SHORTEST PATH--->Type 'FSP' to find the shortest path between two vertex: " << endl << endl;
   cout << "QUIT--->Type 'Q' to leave the program: " << endl;
 }

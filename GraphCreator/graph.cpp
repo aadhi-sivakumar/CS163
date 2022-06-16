@@ -2,173 +2,190 @@
 
 using namespace std;
 
+//constructor
 Graph::Graph() 
 {
-  cout << "Graph Initialized" << endl;
+  
 }
 
+//destructor
 Graph::~Graph() 
 {
-  cout << "Graph Destroyed" << endl;
+  
 }
 
-void Graph::shortestPath(string newStart, string newEnd) 
+//adds the vertex
+void Graph::addVertex(string newlabel) 
 {
-  node* startNode = findNode(newStart);
-  node* endNode = findNode(newEnd);
-  if(!startNode || !endNode) 
-  {
-    cout << "Couldn't find specified vertices." << endl;
-    return;
-  }
-  for(int i = 0; i < size; i++) 
-  { //Copy over vertices to path
-    step* newStep = new step();
-    newStep->vertex = nodeArray[i];
-    path[i] = newStep;
-  }
-  path[startNode->id]->shortest = 0;
-}
-
-
-void Graph::addNode(string newlabel) {
+  //if the adjacency table is full
   if(size >= 20) 
   {
     cout << "Graph is full" << endl;
     return;
   }
-  node* newNode = new node();
-  newNode->id = size;
-  newNode->name = newlabel;
-  newNode->flagged = false;
-  newNode->next = NULL;
-  nodeArray[size] = newNode;
+  //constructs new vertex
+  vertex* newVertex = new vertex();
+  newVertex->id = size;
+  newVertex->name = newlabel;
+  newVertex->next = NULL;
+  nArray[size] = newVertex;
   size++;
 }
+//add edge
 void Graph::addEdge(string newStart, string newEnd) 
 {
-  node* startNode = findNode(newStart);
-  node* endNode = findNode(newEnd);
-  if(!startNode || !endNode) 
+  //finds the two vertexes
+  vertex* sNode = findVertex(newStart);
+  vertex* eNode = findVertex(newEnd);
+  //returns that at least one of the vertices are not there
+  if(!sNode || !eNode) 
   {
-    cout << "Couldn't find specified vertices." << endl;
+    cout << "Couldn't find one of the vertices." << endl;
     return;
   }
-  int newWeight = 1;
+  int nWeight = 1;
   cout << "New edge weight: ";
-  cin >> newWeight;
-  edge* newEdge = new edge();
-  newEdge->weight = newWeight;
-  newEdge->start = startNode;
-  newEdge->end = endNode;
-  node* it = startNode;
-  while(it->next != NULL) 
+  cin >> nWeight;
+  //makes edge
+  edge* nEdge = new edge();
+  nEdge->weight = nWeight;
+  nEdge->start = sNode;
+  nEdge->end = eNode;
+  vertex* a = sNode;
+  while(a->next != NULL) 
   {
-    it = it->next->end;
+    a = a->next->end;
   }
-  it->next = newEdge;
-  adjTable[startNode->id][endNode->id] = true;
-  adjTable[endNode->id][startNode->id] = true;
+  a->next = nEdge;
+  //declares the adjacency table with values
+  adjTable[sNode->id][eNode->id] = true;
+  adjTable[eNode->id][sNode->id] = true;
 }
+
 //Prints the adjacency table
-void Graph::print() {
-  int leftbuffer = 0;
-  bool odd;
-  for(int i = 0; i < size; i++) { //define leftbuffer
-    if(nodeArray[i]->name.size() > leftbuffer) {
-      leftbuffer = nodeArray[i]->name.size();
+void Graph::print() 
+{
+  int space = 0;
+  bool connection;
+  //define buffer
+  for(int i = 0; i < size; i++) 
+  {
+    if(nArray[i]->name.size() > space) 
+    {
+      space = nArray[i]->name.size();
     }
   }
-  for(int i = 0; i < leftbuffer; i++) { //apply buffer to top row
+   //apply buffer to top row
+  for(int i = 0; i < space; i++) 
+  {
     cout << " ";
   }
-  for(int i = 0; i < size; i++) { //print names horizontally
-    cout << nodeArray[i]->name << " ";
+  //print names horizontally
+  for(int i = 0; i < size; i++) 
+  { 
+    cout << nArray[i]->name << " ";
   }
   cout << endl;
-  for(int i = 0; i < size; i++) { //print names vertically
-    cout << nodeArray[i]->name;
-    for(int j = 0; j < leftbuffer - nodeArray[i]->name.size(); j++) {
+  //print names vertically
+  for(int i = 0; i < size; i++)
+    { 
+    cout << nArray[i]->name;
+    for(int j = 0; j < space - nArray[i]->name.size(); j++) 
+    {
       cout << " ";
     }
-    for(int j = 0; j < size; j++) { //print connections
-      if(nodeArray[j]->name.size() % 2 != 0 && nodeArray[j]->name.size() > 1) {
-	odd = true;
+    for(int j = 0; j < size; j++)
+      { 
+      if(nArray[j]->name.size() % 2 != 0 && nArray[j]->name.size() > 1) 
+      {
+	      connection = true;
       }
-      else {
-	odd = false;
+      else 
+      {
+	      connection = false;
       }
-      for(int x = 0; x < nodeArray[j]->name.size() / 2;  x++) { //apply left buffer
+      for(int x = 0; x < nArray[j]->name.size() / 2;  x++) 
+      { 
 	cout << " ";
       }
-      if(adjTable[i][j] == false) {
-	cout << "\033[1;31m" << "F" << "\033[0m";
+      if(adjTable[i][j] == false) 
+      {
+	      cout << "F ";
       }
-      else {
-	cout << "\033[1;32m" << "T" << "\033[0m";
+      else 
+      {
+	      cout << "T ";
       }
-      cout << (odd ? " " : "");
-      for(int x = 0; x < nodeArray[j]->name.size() / 2;  x++) { //apply right buffer
-	cout << " ";
+      cout << (connection ? " " : "");
+      for(int x = 0; x < nArray[j]->name.size() / 2;  x++) 
+      {
+	      cout << " ";
       }
     }
     cout << endl;
   }
 }
 
-node* Graph::findNode(string label) 
+//find node
+vertex* Graph::findVertex(string label) 
 {
   for(int i = 0; i < size; i++) 
   {
-    if(nodeArray[i]->name == label) 
+    if(nArray[i]->name == label) 
     {
-      return nodeArray[i];
+      return nArray[i];
     }
   }
   return NULL;
 }
 
-edge* Graph::findEdge(node* startNode, node* endNode) 
+//find edge
+edge* Graph::findEdge(vertex* startNode, vertex* endNode) 
 {
   if(!adjTable[startNode->id][endNode->id]) 
   {
     return NULL;
   }
-  node* it = nodeArray[startNode->id];
-  while(it->next && it->next->end->id != endNode->id) 
+  vertex* a = nArray[startNode->id];
+  while(a->next && a->next->end->id != endNode->id) 
   {
-    it = it->next->end;
+    a = a->next->end;
   }
-  return it->next;
+  return a->next;
 }
 
-void Graph::removeNode(string label) 
+//remove node
+void Graph::removeVertex(string label) 
 {
-  node* target = findNode(label);
+  //finds the node you want to delete
+  vertex* target = findVertex(label);
+  //if the node you want to delete is not there, states that the vertex is not found
   if(!target) 
   {
-    cout << "Couldn't find specified vertex." << endl;
+    cout << "Couldn't find one of the vertices" << endl;
     return;
   }
-  node* startNode;
-  edge* collateral;
+  vertex* startNode;
+  edge* remove;
   for(int i = 0; i < size; i++) 
-  { //Remove all connecting edges
+  { 
+    //Remove all connecting edges
     if(adjTable[i][target->id]) 
     {
-      startNode = nodeArray[i];
-      collateral = findEdge(startNode, target);
+      startNode = nArray[i];
+      remove = findEdge(startNode, target);
       startNode->next = startNode->next->end->next;
       adjTable[startNode->id][target->id] = false;
       adjTable[target->id][startNode->id] = false;
     }
   }
+  //Shift nodeArray up
   for(int i = target->id; i < size - 1; i++) 
-  { //Shift nodeArray up
-    nodeArray[i + 1]->id = nodeArray[i]->id;
-    nodeArray[i] = nodeArray[i + 1];
+  { 
+    nArray[i + 1]->id = nArray[i]->id;
+    nArray[i] = nArray[i + 1];
   }
-  nodeArray[size] = NULL;
+  nArray[size] = NULL;
   for(int i = target->id; i < size; i++) 
   {
     for(int j = target->id; j < size; j++) 
@@ -180,23 +197,28 @@ void Graph::removeNode(string label)
   size--;
 }
 
+//remove edge
 void Graph::removeEdge(string start, string end)
 {
-  node* startNode = findNode(start);
-  node* endNode = findNode(end);
-  if(!startNode || !endNode) 
+  //finds the two vetexs to remove the edge from
+  vertex* startVertex = findVertex(start);
+  vertex* endVertex = findVertex(end);
+  //returns that at least one of the vertexs are not there
+  if(!startVertex || !endVertex) 
   {
-    cout << "Couldn't find specified vertices." << endl;
+    cout << "Couldn't find one of the vertices." << endl;
     return;
   }
-  edge* target = findEdge(startNode, endNode);
+  //finds the edge tp be deleted
+  edge* target = findEdge(startVertex, endVertex);
+  //if the edge you want to be deleted is not found
   if(!target) 
   {
-    cout << "There is no edge between " << startNode->name << " and " << endNode->name << "." << endl;
+    cout << "There is no edge between " << startVertex->name << " and " << endVertex->name << "." << endl;
     return;
   }
-  startNode->next = startNode->next->end->next;
-  adjTable[startNode->id][endNode->id] = false;
-  adjTable[endNode->id][startNode->id] = false;
+  startVertex->next = startVertex->next->end->next;
+  adjTable[startVertex->id][endVertex->id] = false;
+  adjTable[endVertex->id][startVertex->id] = false;
   cout << "Edge deleted." << endl;
 }
