@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <limits>
+
 using namespace std;
 
 struct edge;
@@ -29,17 +30,17 @@ struct step
   node* prevertex;
 };
 
-class graph 
+class Graph 
 {
  public:
-  graph();
-  ~graph();
-  void addNode(string newLabel);
-  void addEdge(string newStart,string newEnd);
+  Graph();
+  ~Graph();
   void print();
+  void addNode(string newLabel);
   void removeNode(string label);
+  void addEdge(string, string );
   void removeEdge(string start, string end);
-  void shortestPath(string newStart, string newEnd);
+  void shortestPath(string, string);
  private:
   int size = 0;
   step* path[20];
@@ -48,3 +49,5 @@ class graph
   node* findNode(string);
   edge* findEdge(node*, node*);
 };
+
+#endif
