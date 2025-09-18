@@ -2,8 +2,6 @@
 //Author: Aadhi Sivakumar
 //Assignment: Shunting Yard Algorithmn
 //Date: 3/2/2022
-//Sources: Dad helped me with shunting yard and binary tree. Used wikipedia for assistance in the shunting yard.
-*/
 
 #include "stack.h"
 #include "queue.h"
