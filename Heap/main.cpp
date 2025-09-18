@@ -1,8 +1,6 @@
 //Author: Aadhi Sivakumar
 //Assignment: Heap
-//Description:Program that creates a max heao and user can perform functions on it.
-//Sources: Dad helped me with the deletion. 
-//// reference https://www.geeksforgeeks.org/how-to-split-a-string-in-cc-python-and-java/
+//Description:Program that creates a max heap and user can perform functions on it.
 
 #include <iostream>
 #include <cstring>
