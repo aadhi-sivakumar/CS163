@@ -1,8 +1,7 @@
 //Author: Aadhi Sivakumar
 //Assignment: Binary Search Tree
 //Description:Program that creates a binary search tree and user can perform functions on it.
-//Sources: Dad heped me with printing and fixing my segmentation fault
-//Used: https://www.youtube.com/watch?v=gcULXE7ViZw for deletion 
+
 #include <iostream>
 #include <cstring>
 #include <fstream>
