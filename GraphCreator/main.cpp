@@ -1,4 +1,4 @@
-////Author: Aadhi Sivakumar
+//Author: Aadhi Sivakumar
 //Assignment: Graph Creator
 //Description: Creating a graph where you can add and remove vertices.
 
