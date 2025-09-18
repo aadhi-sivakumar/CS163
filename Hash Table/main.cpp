@@ -1,7 +1,6 @@
 //Author: Aadhi Sivakumar
 //Assignment: Hash Table
 //Description: Student list but with a hash table
-//Sourcs: Dad and Zayeed helped me
 
 #include <iostream>
 #include <iomanip>
