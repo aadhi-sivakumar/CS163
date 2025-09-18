@@ -1,7 +1,6 @@
 ////Author: Aadhi Sivakumar
 //Assignment: Graph Creator
 //Description: Creating a graph where you can add and remove vertices.
-//Sources: Dad helped with making the table look nice
 
 #include "graph.h"
 #include <cstring>
